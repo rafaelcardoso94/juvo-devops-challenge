@@ -19,8 +19,8 @@ Essa API é **crítica para o negócio** — qualquer indisponibilidade impacta 
 2. **Configurar um pipeline CI/CD funcional**  
    - Automatize todos os processos que considerar importantes para garantir qualidade, segurança e entrega contínua.
 
-3. **Projetar (ou implementar) uma arquitetura escalável na AWS**  
-   - Crie um diagrama técnico no [draw.io](https://draw.io) com os serviços que utilizaria (AWS ou não).
+3. **Propor uma arquitetura na AWS**  
+   - Crie um diagrama técnico no [draw.io](https://draw.io) com os serviços.
    - Caso possua acesso à AWS, sinta-se livre para provisionar e demonstrar a aplicação em funcionamento.
    - Se não tiver, simule todos os componentes localmente com **Docker Compose**.
 
