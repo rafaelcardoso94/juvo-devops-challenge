@@ -4,7 +4,7 @@
 
 Você foi contratado para criar uma **API de score** que, ao ser chamada com o CPF de um usuário, retorna o score de crédito da pessoa.
 
-Essa API é **crítica para o negócio** — qualquer indisponibilidade impacta diretamente na geração de receita. Por isso, pense desde o início em uma arquitetura **resiliente, escalável e segura**.
+Essa API é **Será crítica para o negócio** — qualquer indisponibilidade impacta diretamente na geração de receita. Temos parceiros externos e internos que utilizam essa api. Por isso, pense desde o início em uma arquitetura **resiliente, escalável e segura**.
 
 Proponha uma nova arquitetura na **aws.**.
 > Realize o fork deste repositório. Ao finalizar, envie o link do seu fork para avaliação.
@@ -34,6 +34,7 @@ Proponha uma nova arquitetura na **aws.**.
 - Você tem **liberdade total** para usar qualquer tecnologia ou stack.
 - Pense além da API: considere **todo o ecossistema que envolve a API**.
 - Seja detalhista — vamos avaliar **seu raciocínio e abordagem prática**.
+- Leve em consideração que a tarefa se destina a um ambiente produtivo não de desenvolvimento/homologação.
 
 ---
 
