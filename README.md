@@ -53,6 +53,6 @@ O repositório (fork) deve conter:
 ---
 
 ## Atenção.
-Pedimos para que a API seja criada do zero, mas vale destacar que isso não é o foco principal do teste. Você pode copiar o código de algum lugar ou criá-lo da forma que preferir. Se você tiver familiaridade com alguma linguagem de programação, tudo bem, mas o objetivo principal é entender como você lida com a implementação de aplicações em geral.
+Pedimos para que a API seja criada do zero, mas vale destacar que isso não é o foco principal do teste. Você pode copiar o código de algum lugar ou criá-lo da forma que preferir. Se você tiver familiaridade com alguma linguagem de programação, tudo bem, caso contrário. Tudo bem também mas voce precisa entregar uma API em funcionamento.O objetivo principal é entender como você lida com a implementação de aplicações em geral.
 
 Boa sorte – estamos curiosos para ver como você pensa e executa!
