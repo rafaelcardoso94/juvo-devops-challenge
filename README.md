@@ -34,7 +34,7 @@ Proponha uma nova arquitetura na **aws.**.
 - Você tem **liberdade total** para usar qualquer tecnologia ou stack.
 - Pense além da API: considere **todo o ecossistema que envolve a API**.
 - Seja detalhista — vamos avaliar **seu raciocínio e abordagem prática**.
-- Leve em consideração que a tarefa se destina a um ambiente produtivo não de desenvolvimento/homologação.
+- Leve em consideração - que a tarefa se destina a um ambiente **produtivo** não de desenvolvimento/homologação.
 
 ---
 
