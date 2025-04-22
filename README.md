@@ -5,7 +5,7 @@
 Você foi contratado para criar uma **API de score** que, ao ser chamada com o CPF de um usuário, retorna o score de crédito da pessoa.
 
 Essa API é **crítica para o negócio** — qualquer indisponibilidade impacta diretamente na geração de receita. Por isso, pense desde o início em uma arquitetura **resiliente, escalável e segura**.
-
+Proponha uma nova arquitetura na **aws.**.
 > Realize o fork deste repositório. Ao finalizar, envie o link do seu fork para avaliação.
 
 ---
@@ -26,7 +26,7 @@ Essa API é **crítica para o negócio** — qualquer indisponibilidade impacta 
 
 ---
 
-## Orientações
+## Orientações/Dicas
 
 - Documente **todas as suas decisões técnicas**
 - Justifique **as escolhas de ferramentas, serviços e padrões adotados**
