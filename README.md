@@ -36,6 +36,7 @@ Proponha uma nova arquitetura na **aws.**.
 - Seja detalhista — vamos avaliar **seu raciocínio e abordagem prática**.
 - Leve em consideração - que a tarefa se destina a um ambiente **produtivo** não de desenvolvimento/homologação.
 
+
 ---
 
 ## Entrega
@@ -51,4 +52,7 @@ O repositório (fork) deve conter:
 
 ---
 
-Boa sorte — estamos curiosos para ver como você pensa e executa!
+## Atenção.
+Pedimos para que a API seja criada do zero, mas vale destacar que isso não é o foco principal do teste. Você pode copiar o código de algum lugar ou criá-lo da forma que preferir. Se você tiver familiaridade com alguma linguagem de programação, tudo bem, mas o objetivo principal é entender como você lida com a implementação de aplicações em geral.
+
+Boa sorte – estamos curiosos para ver como você pensa e executa!
