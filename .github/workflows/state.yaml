@@ -1,0 +1,63 @@
+name: Creation - ECR and Bucket 
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  state:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set variables and sanitize repo name
+        id: vars
+        run: |
+          # Extrai apenas o nome do repositório (sem o usuário)
+          repo_name="${{ github.repository }}"
+          short_name="${repo_name##*/}"
+
+          # Obtem o AWS Account ID
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+          # Exporta variáveis para os próximos steps
+          echo "REPO_NAME=$short_name" >> $GITHUB_ENV
+          echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID" >> $GITHUB_ENV
+          echo "BUCKET_NAME=${AWS_ACCOUNT_ID}-tf-state" >> $GITHUB_ENV
+
+      - name: Check if S3 bucket exists, create if not
+        run: |
+          if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
+            echo "Bucket $BUCKET_NAME already exists."
+          else
+            echo "Creating bucket $BUCKET_NAME"
+            if [ "$AWS_REGION" = "us-east-1" ]; then
+              aws s3api create-bucket \
+                --bucket "$BUCKET_NAME"
+            else
+              aws s3api create-bucket \
+                --bucket "$BUCKET_NAME" \
+                --region "$AWS_REGION" \
+                --create-bucket-configuration LocationConstraint="$AWS_REGION"
+            fi
+          fi
+
+      - name: Check if ECR repo exists, create if not
+        run: |
+          if aws ecr describe-repositories --repository-names "$REPO_NAME" >/dev/null 2>&1; then
+            echo "ECR repository $REPO_NAME already exists."
+          else
+            echo "Creating ECR repository $REPO_NAME"
+            aws ecr create-repository --repository-name "$REPO_NAME" --region $AWS_REGION
+          fi

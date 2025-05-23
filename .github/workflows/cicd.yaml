@@ -1,0 +1,92 @@
+name: Build and Push Docker to ECR
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  docker-build-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set environment variables
+        id: vars
+        run: |
+          GENERAL_TAG=$(git rev-parse HEAD | cut -c1-7)
+          repo_name="${{ github.repository }}"
+          short_name="${repo_name##*/}"
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          echo "GENERAL_TAG=$GENERAL_TAG" >> $GITHUB_ENV
+          echo "REPO_NAME=$short_name" >> $GITHUB_ENV
+          echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID" >> $GITHUB_ENV
+
+      - name: Build and Push Docker Image to ECR
+        run: |
+          IMAGE_URI=${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.REPO_NAME }}
+          
+          echo "Logging into ECR..."
+          docker login -u AWS -p $(aws ecr get-login-password --region $AWS_REGION) $IMAGE_URI
+
+          echo "Building image with tag: $IMAGE_URI:${{ env.GENERAL_TAG }}"
+          docker build -t $IMAGE_URI:${{ env.GENERAL_TAG }} .
+
+          echo "Pushing version tag: $IMAGE_URI:${{ env.GENERAL_TAG }}"
+          docker push $IMAGE_URI:${{ env.GENERAL_TAG }}
+
+          echo "Tagging as latest..."
+          docker tag $IMAGE_URI:${{ env.GENERAL_TAG }} $IMAGE_URI:latest
+
+          echo "Pushing latest tag: $IMAGE_URI:latest"
+          docker push $IMAGE_URI:latest
+     
+  lambda-deploy:
+    needs: docker-build-push
+    runs-on: ubuntu-latest
+    environment: prd
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Set environment variables
+        id: vars
+        run: |
+          GENERAL_TAG=$(git rev-parse HEAD | cut -c1-7)
+          repo_name="${{ github.repository }}"
+          short_name="${repo_name##*/}"
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          echo "GENERAL_TAG=$GENERAL_TAG" >> $GITHUB_ENV
+          echo "REPO_NAME=$short_name" >> $GITHUB_ENV
+          echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID" >> $GITHUB_ENV          
+
+      - name: Update Lambda Function Image
+        run: |
+          IMAGE_URI=${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.REPO_NAME }}:${{ env.GENERAL_TAG }}
+
+          echo "🔁 Updating Lambda function to use image: $IMAGE_URI"
+
+          aws lambda update-function-code \
+            --function-name ${{ env.REPO_NAME }} \
+            --image-uri $IMAGE_URI

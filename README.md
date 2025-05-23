@@ -1,58 +1,50 @@
-# Teste Técnico – DevOps Sênior
+# 📌 Projeto – API Score de Credito
 
-## Objetivo
+API de Score de Crédito desenvolvida para uso interno e externo, com foco em alta disponibilidade, escalabilidade e segurança. Retorna o score com base no CPF e utiliza cache com DynamoDB para otimizar desempenho. Infraestrutura provisionada na AWS via Terraform.
 
-Você foi contratado para criar uma **API de score** que, ao ser chamada com o CPF de um usuário, retorna o score de crédito da pessoa.
+## 🏗️ Arquitetura
+![Diagrama](docs/diagrama.png)
 
-Essa API é **Será crítica para o negócio** — qualquer indisponibilidade impacta diretamente na geração de receita. Temos parceiros externos e internos que utilizam essa api. Por isso, pense desde o início em uma arquitetura **resiliente, escalável e segura**.
+| Componente               | Função                                                                 |
+|--------------------------|------------------------------------------------------------------------|
+| **Usuário / Cliente**     | Faz requisição HTTP para a API Gateway (com API Key).                 |
+| **API Gateway**           | Recebe a requisição, valida a API Key e encaminha para a Lambda.     |
+| **AWS Lambda (Docker)**   | Roda o código Python da API. Consulta e atualiza cache no DynamoDB. Retorna a resposta para o API Gateway. |
+| **DynamoDB**              | Banco NoSQL utilizado como cache para scores de crédito.              |
+| **ECR**                   | Armazena a imagem Docker utilizada pela Lambda.                       |
+| **CloudWatch**            | Armazena logs e métricas da execução da Lambda.                       |
+| **GitHub Actions Pipeline** | Build da imagem, push para ECR, deploy da Lambda e provisionamento via Terraform da estrutura (IaC). |
 
-Proponha uma nova arquitetura na **aws.**.
-> Realize o fork deste repositório. Ao finalizar, envie o link do seu fork para avaliação.
+## 📁 Estrutura
 
----
+```bash
+├── Dockerfile                  # Configuração da imagem Docker da aplicação
+├── app                         # Código-fonte da API
+│   ├── main.py                 # Ponto de entrada da aplicação FastAPI
+│   ├── schemas.py              # Modelos Pydantic para validação e estrutura de dados
+│   ├── services.py             # Lógica de negócio e cálculo do score
+│   └── utils.py                # Funções auxiliares
+├── docs
+│   ├── api.md                  # Documentação da API
+│   ├── decisoes-tecnicas.md    # Decisões técnicas
+│   └── arquitetura.png         # Diagrama da arquitetura em imagem
+│   └── start-projeto.md        # Passo a passo implantação do projeto 
+│   └── melhorias.md            # Melhorias futuras para o projeto
+├── requirements.txt            # Lista de dependências Python do projeto
+└── terraform                   # Infraestrutura como código com Terraform
+    ├── api_gateway.tf          # Configuração do API Gateway e integração com Lambda
+    ├── data.tf                 # Recursos de dados reutilizáveis
+    ├── dynamodb.tf             # Provisionamento da tabela DynamoDB (cache dos scores)
+    ├── lambda.tf               # Deploy da função Lambda com a imagem Docker
+    ├── locals.tf               # Definições de variáveis locais reutilizáveis
+    ├── monitoring.tf           # Integração com CloudWatch para logs e métricas
+    ├── outputs.tf              # Valores de saída da infraestrutura provisionada
+    ├── provider.tf             # Provedor da AWS e configuração principal
+    └── variables.tf            # Definição das variáveis utilizadas no projeto
+```
 
-## Desafio
-
-1. **Implementar a API**  
-   - A API deve responder via HTTP com base no CPF informado.
-   - Você tem liberdade total para definir a estrutura, tecnologia e forma de execução.
-
-2. **Configurar um pipeline CI/CD funcional**  
-   - Automatize todos os processos que considerar importantes para garantir qualidade, segurança e entrega contínua.
-
-3. **Propor uma arquitetura na AWS**  
-   - Crie um diagrama técnico no [draw.io](https://draw.io) com a arquitetura proposta.
-   - Caso possua acesso à AWS, sinta-se livre para provisionar e demonstrar a aplicação em funcionamento.
-   - Se não tiver, simule todos os componentes localmente com **Docker Compose**.
-
----
-
-## Orientações/Dicas
-
-- Documente **todas as suas decisões técnicas**.
-- Justifique **as escolhas de ferramentas, serviços e padrões adotados**.
-- Você tem **liberdade total** para usar qualquer tecnologia ou stack.
-- Pense além da API: considere **todo o ecossistema que envolve a API**.
-- Seja detalhista — vamos avaliar **seu raciocínio e abordagem prática**.
-- Leve em consideração - que a tarefa se destina a um ambiente **produtivo** não de desenvolvimento/homologação.
-
-
----
-
-## Entrega
-
-O repositório (fork) deve conter:
-
-- Código da API de score.
-- Documentação.
-- CI/CD configurado e funcionando (AWS ou Docker Compose).
-- Diagrama da arquitetura proposta na AWS (PNG + `.drawio` ou `.xml`).
-- Documentação técnica das decisões.
-- README com instruções claras de execução.
-
----
-
-## Atenção.
-Pedimos para que a API seja criada do zero, mas vale destacar que isso não é o foco principal do teste. Você pode copiar o código de algum lugar ou criá-lo da forma que preferir. Se você tiver familiaridade com alguma linguagem de programação, tudo bem, caso contrário. Tudo bem também mas voce precisa entregar uma API em funcionamento.O objetivo principal é entender como você lida com a implementação de aplicações em geral... o intuito é avaliar o seu trabalho... fique tranquilo que já temos a nossa API 😂.
-
-Boa sorte – estamos curiosos para ver como você pensa e executa!
+## 📚 Documentações
+[Decisões técnicas](docs/decisoes-tecnicas.md)<br>
+[Start Projeto](docs/start-projeto.md)<br>
+[Doc API](docs/api.md)<br>
+[Melhorias](docs/melhorias.md)<br>

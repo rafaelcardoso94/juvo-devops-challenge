@@ -1,0 +1,65 @@
+name: Terraform Destroy
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+
+jobs: 
+  destroy-infra:
+    name: "Destroy Terraform"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}  
+
+      - name: Set variables
+        id: vars
+        run: |
+          repo_name="${{ github.repository }}"
+          short_name="${repo_name##*/}"
+          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+          echo "REPO_NAME=$short_name" >> $GITHUB_ENV
+          echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID" >> $GITHUB_ENV
+          echo "BUCKET_NAME=${AWS_ACCOUNT_ID}-tf-state" >> $GITHUB_ENV
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: "Terraform Init"
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: "Terraform Destroy"
+        working-directory: ./terraform
+        run: terraform destroy --auto-approve
+
+      - name: Delete ECR repository
+        run: |
+          if aws ecr describe-repositories --repository-names "$REPO_NAME" >/dev/null 2>&1; then
+            echo "Deleting ECR repository: $REPO_NAME"
+            aws ecr delete-repository --repository-name "$REPO_NAME" --force
+          else
+            echo "ECR repository $REPO_NAME does not exist."
+          fi
+
+      - name: Delete S3 bucket (and all contents)
+        run: |
+          if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
+            echo "Deleting all objects from bucket: $BUCKET_NAME"
+            aws s3 rm s3://$BUCKET_NAME --recursive
+
+            echo "Deleting bucket: $BUCKET_NAME"
+            aws s3api delete-bucket --bucket "$BUCKET_NAME" --region $AWS_REGION
+          else
+            echo "Bucket $BUCKET_NAME does not exist."
+          fi        
