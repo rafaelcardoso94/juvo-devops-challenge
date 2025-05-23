@@ -37,7 +37,7 @@ jobs:
 
       - name: "Terraform Init"
         working-directory: ./terraform
-        run: terraform init
+        run: terraform init -backend-config="bucket=${{ env.AWS_ACCOUNT_ID }}-tf-state"
 
       - name: "Terraform Destroy"
         working-directory: ./terraform
