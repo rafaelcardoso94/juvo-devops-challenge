@@ -46,7 +46,7 @@ def health_check():
     return JSONResponse(
         status_code=status_code,
         content={
-            "api": "ok" if status_code == 200 else "degraded",
+            "status": "ok" if status_code == 200 else "degraded",
             "dynamodb": dynamodb_status
         }
     )
