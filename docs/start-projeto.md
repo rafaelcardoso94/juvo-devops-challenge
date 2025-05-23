@@ -67,8 +67,8 @@ Ação: Destruir toda a infra e deletar ECR/S3.
 
 **Clonar o repositório:**
 ```bash
-git clone git@github.com:seu-usuario/seu-repo.git
-cd seu-repo
+git clone git@github.com:rafaelcardoso94/juvo-devops-challenge.git
+cd juvo-devops-challenge
 ```
 
 **Configurar os segredos no Github:**
