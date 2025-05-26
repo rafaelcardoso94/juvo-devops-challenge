@@ -34,7 +34,7 @@ jobs:
           # Exporta variáveis para os próximos steps
           echo "REPO_NAME=$short_name" >> $GITHUB_ENV
           echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID" >> $GITHUB_ENV
-          echo "BUCKET_NAME=${AWS_ACCOUNT_ID}-tf-state" >> $GITHUB_ENV
+          echo "BUCKET_NAME=${AWS_ACCOUNT_ID}-tfstate" >> $GITHUB_ENV
 
       - name: Check if S3 bucket exists, create if not
         run: |
