@@ -110,3 +110,15 @@ resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {
   key_type      = "API_KEY"
   usage_plan_id = aws_api_gateway_usage_plan.score_usage_plan.id
 }
+
+resource "aws_secretsmanager_secret" "api_key_secret" {
+  name        = "${var.api_name}-api-key-secret"
+  description = "Armazena a API Key da API de score"
+}
+
+resource "aws_secretsmanager_secret_version" "api_key_value" {
+  secret_id     = aws_secretsmanager_secret.api_key_secret.id
+  secret_string = jsonencode({
+    api_key = aws_api_gateway_api_key.score_api_key.value
+  })
+}

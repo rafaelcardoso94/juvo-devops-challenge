@@ -15,7 +15,7 @@ variable "lambda_role_name" {
 
 variable "lambda_function_name" {
   type    = string
-  default = "credit_score_api"
+  default = "credit-score-api"
 }
 
 variable "api_name" {

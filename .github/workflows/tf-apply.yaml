@@ -54,6 +54,7 @@ jobs:
           terraform plan \
             -var="repository_name=${{ env.REPO_NAME }}" \
             -var="lambda_function_name=${{ env.REPO_NAME }}" \
+            -var="api_name=${{ env.REPO_NAME }}" \
             -out=tfplan -input=false    
 
       - name: Terraform Apply 
@@ -62,4 +63,5 @@ jobs:
           terraform apply \
             -var="repository_name=${{ env.REPO_NAME }}" \
             -var="lambda_function_name=${{ env.REPO_NAME }}" \
+            -var="api_name=${{ env.REPO_NAME }}" \
             --auto-approve
