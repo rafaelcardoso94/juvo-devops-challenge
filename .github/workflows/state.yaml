@@ -1,4 +1,4 @@
-name: Creation - ECR and Bucket 
+name: 1 - Creation (ECR and Bucket) 
 
 on:
   workflow_dispatch:
