@@ -30,7 +30,7 @@ jobs:
 
           echo "REPO_NAME=$short_name" >> $GITHUB_ENV
           echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID" >> $GITHUB_ENV
-          echo "BUCKET_NAME=${AWS_ACCOUNT_ID}-tf-state" >> $GITHUB_ENV
+          echo "BUCKET_NAME=${AWS_ACCOUNT_ID}-tfstate" >> $GITHUB_ENV
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
