@@ -111,8 +111,12 @@ resource "aws_api_gateway_usage_plan_key" "usage_plan_key" {
   usage_plan_id = aws_api_gateway_usage_plan.score_usage_plan.id
 }
 
+resource "random_id" "secret_suffix" {
+  byte_length = 4
+}
+
 resource "aws_secretsmanager_secret" "api_key_secret" {
-  name        = "${var.api_name}-api-key-secret"
+  name        = "${var.api_name}-api-key-secret-${random_id.secret_suffix.hex}"
   description = "Armazena a API Key da API de score"
 }
 
