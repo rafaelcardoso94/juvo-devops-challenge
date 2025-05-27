@@ -35,6 +35,17 @@ jobs:
           echo "REPO_NAME=$short_name" >> $GITHUB_ENV
           echo "AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID" >> $GITHUB_ENV
 
+      - name: Check if ECR repository exists
+        run: |
+          echo "Verificando existência do repositório ECR '${REPO_NAME}'..."
+          if ! aws ecr describe-repositories \
+            --repository-names "${REPO_NAME}" \
+            --region "${{ env.AWS_REGION }}" \
+            > /dev/null 2>&1; then
+            echo "::error::Repositório ECR '${REPO_NAME}' não encontrado. Abortando."
+            exit 1
+          fi
+
       - name: Build and Push Docker Image to ECR
         run: |
           IMAGE_URI=${{ env.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.REPO_NAME }}
